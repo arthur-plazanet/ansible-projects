@@ -1,0 +1,4 @@
+---
+- name: Install NVM, Node, and PM2
+  ansible.builtin.include_tasks: install.yml
+  when: run_install | default(false)
