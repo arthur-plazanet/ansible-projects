@@ -6,30 +6,27 @@
 
 ---
 - name: Fetch the latest Zellij release
-  shell: >
+  ansible.builtin.shell: >
     curl -s https://api.github.com/repos/zellij-org/zellij/releases/latest |
     grep "browser_download_url.*x86_64-unknown-linux-musl.tar.gz" |
     cut -d '"' -f 4 |
     wget -i -
-
-- name: Extract the archive 
-  shell: |
+- name: Extract the archive
+  ansible.builtin.shell: |
     tar -xzf zellij-x86_64-unknown-linux-musl.tar.gz
   args:
     executable: /bin/bash
-    
+
 - name: Move the binary to /usr/local/bin
-  shell: |
+  ansible.builtin.shell: |
     sudo mv zellij /usr/local/bin/
   args:
     executable: /bin/bash
-  become: yes
+  become: true
 
 - name: Clean up
-  shell: |
+  ansible.builtin.shell: |
     rm zellij-x86_64-unknown-linux-musl.tar.gz
-
 - name: Verify installation
-  shell: |
+  ansible.builtin.shell: |
     zellij --version
-

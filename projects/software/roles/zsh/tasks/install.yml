@@ -15,7 +15,9 @@
 
 # if prezto already exists, do not launch this task
 - name: Check if Prezto is already installed
-  ansible.builtin.stat: path=/home/{{ ansible_user }}/.zprezto
+  ansible.builtin.stat:
+    path: /home/{{
+    cmd: ansible_user }}/.zprezto
   register: prezto_check
 
 - name: Install Prezto
@@ -24,5 +26,5 @@
 
 - name: Prezto is already installed
   ansible.builtin.debug:
-    msg: "Prezto is already installed"
+    msg: Prezto is already installed
   when: prezto_check.stat.exists
