@@ -2,3 +2,7 @@
 - name: Install Nginx
   ansible.builtin.include_tasks: install.yml
   when: run_install | default(false)
+
+- name: Setup Server Block
+  ansible.builtin.include_tasks: setup_server_block.yml
+  when: run_setup | default(false)
