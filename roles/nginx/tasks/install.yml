@@ -1,0 +1,29 @@
+---
+# TODO: as of now (12-10-2024) adding the PPA repository is not working dynamically
+#  with every Ubuntu version (e.g. Ubuntu 24)
+#
+# - name: Add Nginx repo
+#   ansible.builtin.apt_repository:
+#     repo: ppa:ondrej/nginx
+
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    force: true
+    update_cache: true
+
+- name: Symlink default site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify: Reload nginx
+
+- name: Set Nginx user
+  ansible.builtin.lineinfile:
+    dest: /etc/nginx/nginx.conf
+    regexp: ^user
+    line: user {{ username }};
+    state: present
+  notify: Restart nginx
