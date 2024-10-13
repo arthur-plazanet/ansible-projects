@@ -13,9 +13,9 @@
 # https://github.com/manji602/ansible-prezto/blob/master/tasks/install_prezto.yml
 ---
 - name: Install prezto
-  git:
+  ansible.builtin.git:
     repo: https://github.com/sorin-ionescu/prezto.git
-    dest: '/home/{{ ansible_user_id }}/.zprezto'
+    dest: /home/{{ ansible_user_id }}/.zprezto
 
 - name: Add symbolic link dotfiles
   ansible.builtin.shell: |
@@ -28,7 +28,7 @@
   ignore_errors: true
 
 - name: Set .zshrc
-  template:
+  ansible.builtin.template:
     src: .zshrc.j2
-    dest: '/home/{{ ansible_user_id }}/.zshrc'
-    owner: '{{ ansible_user_id }}'
+    dest: /home/{{ ansible_user_id }}/.zshrc
+    owner: "{{ ansible_user_id }}"

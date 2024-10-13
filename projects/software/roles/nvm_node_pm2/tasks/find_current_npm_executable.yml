@@ -4,7 +4,7 @@
 # See https://docs.ansible.com/ansible/latest/collections/community/general/npm_module.html#parameter-executable
 
 - name: Source nvm and find the node executable path
-  shell: |
+  ansible.builtin.shell: |
     source ~/.nvm/nvm.sh &&
     nvm which node
   register: node_path_result
@@ -12,18 +12,18 @@
     executable: /bin/bash
 
 - name: Ensure node executable path is found
-  fail:
-    msg: 'Failed to find node executable path'
+  ansible.builtin.fail:
+    msg: Failed to find node executable path
   when: node_path_result.rc != 0
 
 - name: Set node path fact
-  set_fact:
-    node_path: '{{ node_path_result.stdout | trim }}'
+  ansible.builtin.set_fact:
+    node_path: "{{ node_path_result.stdout | trim }}"
 
 - name: Set node directory fact
-  set_fact:
-    node_dir: '{{ node_path | dirname }}'
+  ansible.builtin.set_fact:
+    node_dir: "{{ node_path | dirname }}"
 
 - name: Set npm path fact
-  set_fact:
-    npm_path: '{{ node_dir }}/npm'
+  ansible.builtin.set_fact:
+    npm_path: "{{ node_dir }}/npm"
