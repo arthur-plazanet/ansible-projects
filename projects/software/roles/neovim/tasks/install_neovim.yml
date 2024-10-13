@@ -1,0 +1,35 @@
+# Install Neovim from source
+
+- name: Install prerequisites
+  ansible.builtin.apt:
+    name:
+      - ninja-build
+      - gettext
+      - cmake
+      - unzip
+      - curl
+      - build-essential
+    state: present
+    update_cache: true
+  become: true
+
+- name: Clone Neovim repository
+  ansible.builtin.git:
+    repo: https://github.com/neovim/neovim
+    dest: /home/{{ ansible_user_id }}/neovim
+
+- name: Build Neovim
+  ansible.builtin.shell: |
+    cd /home/{{ ansible_user_id }}/neovim &&
+    make CMAKE_BUILD_TYPE=Release
+  args:
+    chdir: /home/{{ ansible_user_id }}/neovim
+    # creates: /usr/local/bin/nvim
+
+- name: Install Neovim
+  ansible.builtin.shell: |
+    cd build && cpack -G DEB && sudo dpkg -i nvim-linux64.deb
+  become: true
+  args:
+    chdir: /home/{{ ansible_user_id }}/neovim
+    # creates: /usr/local/bin/nvim

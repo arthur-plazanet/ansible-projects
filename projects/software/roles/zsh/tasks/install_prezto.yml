@@ -1,0 +1,34 @@
+# ---
+# - name: Install Prezto
+#   ansible.builtin.shell: |
+#     git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+#     setopt EXTENDED_GLOB
+#     for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+#       ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+#     done
+#   args:
+#     chdir: /home/{{ ansible_user }}
+#     creates: /home/{{ ansible_user }}/.zprezto
+
+# https://github.com/manji602/ansible-prezto/blob/master/tasks/install_prezto.yml
+---
+- name: Install prezto
+  git:
+    repo: https://github.com/sorin-ionescu/prezto.git
+    dest: '/home/{{ ansible_user_id }}/.zprezto'
+
+- name: Add symbolic link dotfiles
+  ansible.builtin.shell: |
+    setopt EXTENDED_GLOB
+    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+      ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+    done
+  args:
+    executable: /bin/zsh
+  ignore_errors: true
+
+- name: Set .zshrc
+  template:
+    src: .zshrc.j2
+    dest: '/home/{{ ansible_user_id }}/.zshrc'
+    owner: '{{ ansible_user_id }}'
