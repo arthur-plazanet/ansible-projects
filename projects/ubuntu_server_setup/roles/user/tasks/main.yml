@@ -1,0 +1,32 @@
+---
+- name: Ensure sudo group is present
+  ansible.builtin.group:
+    name: sudo
+    state: present
+
+- name: Ensure sudo group has sudo privileges
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: ^%sudo
+    line: '%sudo ALL=(ALL:ALL) ALL'
+    validate: /usr/sbin/visudo -cf %s
+
+- name: Create default user
+  ansible.builtin.user:
+    name: '{{ username }}'
+    groups: sudo
+    password: "{{ password | password_hash('sha512') }}"
+    shell: /bin/bash
+    update_password: always
+    state: present
+
+- name: Add authorized key
+  ansible.posix.authorized_key:
+    user: '{{ username }}'
+    key: "{{ lookup('file', ansible_ssh_public_key) }}"
+
+- name: generate SSH key
+  openssh_keypair:
+    owner: '{{ username }}'
+    path: '~/.ssh/id_ssh_rsa'

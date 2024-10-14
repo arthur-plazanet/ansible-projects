@@ -1,0 +1,19 @@
+---
+# https://github.com/spinupwp/wordpress-ansible
+- name: Ubuntu Server Setup
+  # https://stackoverflow.com/a/36361222/13172236
+  hosts: '{{ setupHosts }}'
+  vars_prompt:
+    - name: 'setupHosts'
+      prompt: 'Which hosts would you like to use?'
+      private: false
+  become: true
+  vars:
+    run_install: true
+    run_setup: false
+  roles:
+    - common
+    - ufw
+    - user
+    - nginx
+    - ssh
