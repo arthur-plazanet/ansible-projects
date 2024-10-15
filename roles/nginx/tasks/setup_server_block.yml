@@ -1,0 +1,75 @@
+---
+- name: Ensure Nginx is installed
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Create directories
+  ansible.builtin.file:
+    path: /var/www/{{ domain }}
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+    recurse: true
+
+- name: Create server block config file from template
+  ansible.builtin.template:
+    src: nginx_server_block.j2
+    dest: /etc/nginx/sites-available/{{ domain }}
+    mode: "0644"
+
+- name: Enable server block by creating symlink
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/{{ domain }}
+    dest: /etc/nginx/sites-enabled/{{ domain }}
+    state: link
+
+- name: Test Nginx configuration
+  ansible.builtin.command: nginx -t
+  notify: Restart nginx
+
+- name: Obtain SSL certificate with Certbot
+  ansible.builtin.apt:
+    name:
+      - certbot
+      - python3-certbot-nginx
+    state: present
+
+# TODO: This step is quite buggy
+#  - Sometimes work
+#  - Sometimes doesn't work and break the Certbot service
+# https://wiki.arthurplazanet.com//devops-and-automations/ansible#getting-a-new-certificate-with-certbot
+#
+# Seems not really doable with certbot?
+# https://www.digitalocean.com/community/tutorials/how-to-acquire-a-let-s-encrypt-certificate-using-ansible-on-ubuntu-18-04
+- name: Obtain SSL certificate
+  ansible.builtin.command: certbot --nginx -d {{ domain }} -d www.{{ domain }} --non-interactive --agree-tos --email you@example.com
+  # command: sudo certbot --nginx -d {{ domain }} -d www.{{ domain }} --non-interactive --agree-tos --email you@example.com
+  # ansible.builtin.command: sudo certbot --nginx -d {{ domain }} -d www.{{ domain }}
+  register: certbot_result
+  retries: 3
+  delay: 5
+  until: certbot_result is succeeded
+  become: true
+  # Continue if fails as often breakings
+  ignore_errors: true
+
+- name: Create index.html
+  ansible.builtin.copy:
+    dest: /var/www/{{ domain }}/index.html
+    content: |
+      <html>
+      <head>
+          <title>Welcome to {{ domain }}!</title>
+      </head>
+      <body>
+          <h1>Success! The {{ domain }} server block is working!</h1>
+          <h2>Hello Learning day, if you see this then my "presentation" went well!</h2>
+      </body>
+      </html>
+
+- name: Test Nginx configuration
+  ansible.builtin.command: nginx -t
+  notify: Restart nginx
