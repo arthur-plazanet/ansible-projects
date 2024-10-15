@@ -1,0 +1,4 @@
+---
+- name: Install Neovim
+  ansible.builtin.include_tasks: install_neovim.yml
+  when: run_install | default(false)

@@ -1,19 +1,18 @@
 ---
-# https://github.com/spinupwp/wordpress-ansible
-- name: Ubuntu Server Setup
+- name: Install user softwares
   # https://stackoverflow.com/a/36361222/13172236
   hosts: "{{ setupHosts }}"
+  vars:
+    run_install: true
+    run_upgrade: false
   vars_prompt:
     - name: setupHosts
       prompt: Which hosts would you like to use?
       private: false
-  become: true
-  vars:
-    run_install: true
-    run_setup: false
+  tasks:
+    - ansible.builtin.command: echo
   roles:
-    - common
-    - ufw
-    - user
-    - nginx
-    - ssh
+    - zsh
+    - nvm_node_pm2
+    - zellij
+    - neovim

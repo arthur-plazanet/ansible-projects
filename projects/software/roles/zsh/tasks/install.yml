@@ -1,0 +1,30 @@
+---
+- name: Install prerequisites
+  ansible.builtin.apt:
+    name:
+      - zsh
+    state: present
+    update_cache: true
+  become: true
+
+- name: Change default shell to Zsh
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    shell: /usr/bin/zsh
+  become: true
+
+# if prezto already exists, do not launch this task
+- name: Check if Prezto is already installed
+  ansible.builtin.stat:
+    path: /home/{{
+    cmd: ansible_user }}/.zprezto
+  register: prezto_check
+
+- name: Install Prezto
+  ansible.builtin.include_tasks: install_prezto.yml
+  when: not prezto_check.stat.exists
+
+- name: Prezto is already installed
+  ansible.builtin.debug:
+    msg: Prezto is already installed
+  when: prezto_check.stat.exists

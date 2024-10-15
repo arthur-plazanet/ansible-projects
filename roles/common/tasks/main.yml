@@ -17,6 +17,12 @@
 
 - name: Remove dependencies that are no longer required.
   ansible.builtin.apt:
-    autoremove: yes
-    autoclean: yes
+    autoremove: true
+    autoclean: true
   become: true
+
+- name: Resurrect pm2 after reboot if pm2 is installed
+  ansible.builtin.shell: pm2 resurrect
+  args:
+    executable: /bin/zsh
+  when: reboot_required_file.stat.exists and ansible_local.pm2 is defined

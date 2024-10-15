@@ -1,0 +1,4 @@
+---
+- name: Install Zsh and Prezto
+  ansible.builtin.include_tasks: install.yml
+  when: run_install | default(false)

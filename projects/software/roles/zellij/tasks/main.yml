@@ -1,0 +1,4 @@
+---
+- name: Install Zellij
+  ansible.builtin.include_tasks: install_zellij.yml
+  when: run_install | default(false)
