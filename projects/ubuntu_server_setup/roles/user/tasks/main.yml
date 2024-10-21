@@ -9,12 +9,12 @@
     dest: /etc/sudoers
     state: present
     regexp: ^%sudo
-    line: "%sudo ALL=(ALL:ALL) ALL"
+    line: '%sudo ALL=(ALL:ALL) ALL'
     validate: /usr/sbin/visudo -cf %s
 
 - name: Create default user
   ansible.builtin.user:
-    name: "{{ username }}"
+    name: '{{ username }}'
     groups: sudo
     password: "{{ password | password_hash('sha512') }}"
     shell: /bin/bash
@@ -23,10 +23,10 @@
 
 - name: Add authorized key
   ansible.posix.authorized_key:
-    user: "{{ username }}"
+    user: '{{ username }}'
     key: "{{ lookup('file', ansible_ssh_public_key) }}"
 
 - name: Generate SSH key
   community.crypto.openssh_keypair:
-    owner: "{{ username }}"
+    owner: '{{ username }}'
     path: ~/.ssh/id_ssh_rsa
