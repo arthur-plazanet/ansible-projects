@@ -9,15 +9,14 @@
 
 - name: Change default shell to Zsh
   ansible.builtin.user:
-    name: "{{ ansible_user }}"
+    name: '{{ ansible_user }}'
     shell: /usr/bin/zsh
   become: true
 
 # if prezto already exists, do not launch this task
 - name: Check if Prezto is already installed
   ansible.builtin.stat:
-    path: /home/{{
-    cmd: ansible_user }}/.zprezto
+    path: /home/{{ ansible_user }}/.zprezto
   register: prezto_check
 
 - name: Install Prezto
