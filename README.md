@@ -1,13 +1,26 @@
 # Personal Ansible Projects
 
-This repository contains my personal Ansible projects.
-I use and update it regularly.
-It's meant to be re-usable and easy to understand, you can use it as a base to create your own Ansible projects.
+This repository contains some personal Ansible projects that I use and update regularly.
+
+It's meant to be re-usable and easy to understand.
+
 I decided to make it public after seeing many sources that really helped me getting into Ansible and to get feedback on how to improve it.
+
+## Current projects
+
+- Ubuntu Server Setup
+- Software: install user software:
+  - zsh with [prezto](https://github.com/sorin-ionescu/prezto)
+  - nvm, Node and PM2
+  - Zellij - terminal multiplexer similar to tmux
+  - Neovim
+- Nginx Setup Server Block: to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate (not fully working yet)
+- Update packages and reboot if required: just a simple playbook to update packages on your server and reboot if required
 
 ## Disclaimer
 
-This is my personal configuration that I use to setup and manage my current servers (mostly Digital Ocean Ubuntu droplets).
+This is my personal configuration (mostly Digital Ocean Ubuntu droplets).
+
 It is Debian/Ubuntu oriented and the software I use might not be the same as yours.
 
 ## Directory structure
@@ -41,16 +54,13 @@ roles/ # main roles used in every project
       main.yml
 ```
 
-## Current projects
+## Example commands
 
-- Ubuntu Server Setup:
-- Software: install user software:
-  - zsh [wirh](https://github.com/sorin-ionescu/prezto)
-  - nvm, Node and PM2
-  - Zellij - terminal multiplexer similar to tmux
-  - Neovim
-- Nginx Setup Server Block: to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate (not fully working yet)
-- Update packages and reboot if required: just a simple playbook to update packages on your server and reboot if required
+Assuming you have a `hosts.yml` file in `~/.ansible/` and a `secrets.yml` file in the current directory
+
+```sh
+ansible-playbook -i ~/.ansible/hosts.yml -e @secrets.yml --ask-vault-pass -K ubuntu_server_setup.yml
+```
 
 ## Sources
 
