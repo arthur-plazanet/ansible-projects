@@ -1,0 +1,54 @@
+---
+- name: Gather CPU usage
+  #
+  # top -bn1 generates a single batch of the top command output.
+  # grep 'Cpu(s)' filters the line with CPU information.
+  # awk '{print $2 + $4}' extracts the second and fourth columns (user and system CPU usage) and adds them.
+  #
+  # Comparing to
+  # shell: top -bn1 | grep 'Cpu(s)' | awk '{print $2}'
+  # Which only retrieve only the second column (user CPU usage).
+  #
+  ansible.builtin.shell: mpstat 1 1 | awk '/Average:/ {print 100 - $NF}'
+  register: cpu_usage
+
+- name: Gather RAM usage
+  ansible.builtin.shell: free -m | awk '/Mem/ {printf "%.2f", ($3/$2)*100}'
+  register: ram_usage
+
+- name: Get top 5 memory-consuming processes
+  shell: ps aux --sort=-%mem | awk 'NR<=6{print $1, $2, $3, $4, $11}'
+  register: memory_top_processes
+
+- name: Gather Disk Space
+  ansible.builtin.shell: df -h / | awk 'NR==2 {print $5}'
+  register: disk_space
+
+- name: Gather Load Average
+  ansible.builtin.shell: uptime | awk -F'[a-z]:' '{print $2}'
+  register: load_average
+
+- name: Gather Swap Usage
+  ansible.builtin.shell: free -m | awk '/Swap/ {printf "%.2f", ($3/$2)*100}'
+  register: swap_usage
+  ignore_errors: true
+
+- name: Check swap usage
+  shell: 'swapon --show | tail -n +2'
+  register: swap_usage
+
+- name: Display swap usage
+  debug:
+    msg: '{{ swap_usage.stdout_lines }}'
+
+- name: Display System Metrics
+  ansible.builtin.debug:
+    msg:
+      - 'Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}'
+      - 'CPU Usage: {{ cpu_usage.stdout }}%'
+      - 'RAM Usage: {{ ram_usage.stdout }}%'
+      - 'Disk Space Used: {{ disk_space.stdout }}'
+      - 'Load Average: {{ load_average.stdout }}'
+      - 'Swap Usage: {{ swap_usage.stdout }}%'
+      - 'Top 5 Memory-Consuming Processes:'
+      - '{{ memory_top_processes.stdout_lines }}'
