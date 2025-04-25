@@ -9,16 +9,16 @@
   ansible.builtin.file:
     path: /var/www/{{ domain }}
     state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0755"
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0755'
     recurse: true
 
 - name: Create server block config file from template
   ansible.builtin.template:
     src: nginx_server_block.j2
     dest: /etc/nginx/sites-available/{{ domain }}
-    mode: "0644"
+    mode: '0644'
 
 - name: Enable server block by creating symlink
   ansible.builtin.file:

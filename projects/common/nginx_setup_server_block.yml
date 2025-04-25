@@ -1,7 +1,7 @@
 ---
 - name: Setup Server Block
   # https://stackoverflow.com/a/36361222/13172236
-  hosts: "{{ setupHosts }}"
+  hosts: '{{ setupHosts }}'
   vars:
     run_install: false
     run_setup: true
@@ -9,8 +9,14 @@
     - name: setupHosts
       prompt: Which hosts would you like to use?
       private: false
-  tasks:
-    - ansible.builtin.command: echo
+
+    # Ask for the domain name you want to set up the server block for
+    # should be without https and www
+    # e.g. example.com
+    # See README.MD]./README.md) for more details
+    - name: domain
+      prompt: What is the domain name?
+      private: false
   become: true
   roles:
     - nginx
