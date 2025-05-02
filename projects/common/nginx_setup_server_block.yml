@@ -1,5 +1,5 @@
 ---
-- name: Setup Server Block
+- name: Setup Nginx Server Block
   # https://stackoverflow.com/a/36361222/13172236
   hosts: '{{ setupHosts }}'
   vars:
