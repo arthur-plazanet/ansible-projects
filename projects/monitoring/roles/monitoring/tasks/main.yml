@@ -1,0 +1,7 @@
+---
+- name: Gather server metrics
+  ansible.builtin.include_tasks: server_metrics.yml
+
+# TODO: Not fully working
+- name: Gather software versions
+  ansible.builtin.include_tasks: software_versions.yml

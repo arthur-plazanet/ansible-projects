@@ -1,0 +1,51 @@
+---
+- name: Gather Node.js version
+  command: node -v
+  register: node_version
+  failed_when: false
+
+- name: Ensure NVM is sourced
+  shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh; source ~/.nvm/nvm.sh && nvm --version'
+  register: nvm_version
+  failed_when: false
+
+- name: Gather PM2 version with Zprezto
+  shell: zsh -c '[ -d ~/.zprezto ] && source ~/.zprezto/init.zsh || source ~/.oh-my-zsh/oh-my-zsh.sh && pm2 --version'
+  register: pm2_version
+  # become: true
+  failed_when: false
+
+- name: Gather PHP version
+  command: php -v | head -n 1
+  register: php_version
+  become: true
+  failed_when: false
+
+- name: Check if Node.js is installed
+  debug:
+    msg: Node.js not installed
+  when: node_version.stdout is undefined or node_version.stdout == ''
+
+- name: Check if NVM is installed
+  debug:
+    msg: NVM not installed
+  when: nvm_version.stdout is undefined or nvm_version.stdout == ''
+
+- name: Check if PM2 is installed
+  debug:
+    msg: PM2 not installed
+  when: pm2_version.stdout is undefined or pm2_version.stdout == ''
+
+- name: Check if PHP is installed
+  debug:
+    msg: PHP not installed
+  when: php_version.stdout is undefined or php_version.stdout == ''
+
+- name: Display gathered versions
+  debug:
+    msg:
+      - 'Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}'
+      - "Node.js Version: {% if node_version.stdout is defined and node_version.stdout != '' %}{{ node_version.stdout }}{% else %}Not Installed{% endif %}"
+      - "NVM Version: {% if nvm_version.stdout is defined and nvm_version.stdout != '' %}{{ nvm_version.stdout }}{% else %}Not Installed{% endif %}"
+      - "PM2 Version: {% if pm2_version.stdout is defined and pm2_version.stdout != '' %}{{ pm2_version.stdout }}{% else %}Not Installed{% endif %}"
+      - "PHP Version: {% if php_version.stdout is defined and php_version.stdout != '' %}{{ php_version.stdout }}{% else %}Not Installed{% endif %}"
