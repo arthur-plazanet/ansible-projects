@@ -17,7 +17,7 @@
   register: ram_usage
 
 - name: Get top 5 memory-consuming processes
-  shell: ps aux --sort=-%mem | awk 'NR<=6{print $1, $2, $3, $4, $11}'
+  ansible.builtin.shell: ps aux --sort=-%mem | awk 'NR<=6{print $1, $2, $3, $4, $11}'
   register: memory_top_processes
 
 - name: Gather Disk Space
@@ -34,11 +34,11 @@
   ignore_errors: true
 
 - name: Check swap usage
-  shell: 'swapon --show | tail -n +2'
+  ansible.builtin.shell: swapon --show | tail -n +2
   register: swap_usage
 
 - name: Display swap usage
-  debug:
+  ansible.builtin.debug:
     msg: '{{ swap_usage.stdout_lines }}'
 
 - name: Display System Metrics
