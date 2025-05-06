@@ -39,16 +39,16 @@
 
 - name: Display swap usage
   ansible.builtin.debug:
-    msg: "{{ swap_usage.stdout_lines }}"
+    msg: '{{ swap_usage.stdout_lines }}'
 
 - name: Display System Metrics
   ansible.builtin.debug:
     msg:
-      - "Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}"
-      - "CPU Usage: {{ cpu_usage.stdout }}%"
-      - "RAM Usage: {{ ram_usage.stdout }}%"
-      - "Disk Space Used: {{ disk_space.stdout }}"
-      - "Load Average: {{ load_average.stdout }}"
-      - "Swap Usage: {{ swap_usage.stdout }}%"
-      - "Top 5 Memory-Consuming Processes:"
-      - "{{ memory_top_processes.stdout_lines }}"
+      - 'Executed On: {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}'
+      - 'CPU Usage: {{ cpu_usage.stdout }}%'
+      - 'RAM Usage: {{ ram_usage.stdout }}%'
+      - 'Disk Space Used: {{ disk_space.stdout }}'
+      - 'Load Average: {{ load_average.stdout }}'
+      - 'Swap Usage: {{ swap_usage.stdout }}%'
+      - 'Top 5 Memory-Consuming Processes:'
+      - '{{ memory_top_processes.stdout_lines }}'
