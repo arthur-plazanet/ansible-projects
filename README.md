@@ -8,12 +8,12 @@ I decided to make it public after seeing many sources that really helped me gett
 
 ## Current projects
 
-- Ubuntu Server Setup
+- Ubuntu Server Setup - [ubuntu_server_setup](https://github.com/arthur-plazanet/ansible-projects/tree/main/projects/ubuntu_server_setup)
 - Software: install user software:
   - zsh with [prezto](https://github.com/sorin-ionescu/prezto)
   - nvm, Node and PM2
-  - Zellij - terminal multiplexer similar to tmux
-  - Neovim
+  - [Zellij](https://github.com/zellij-org/zellij) - terminal multiplexer similar to tmux
+  - [Neovim](https://github.com/neovim/neovim)
 - Nginx Setup Server Block: to automate the registration of a new domain on a server, with the default configuration on Nginx and Let's Encrypt SSL certificate (not fully working yet)
 - Update packages and reboot if required: just a simple playbook to update packages on your server and reboot if required
 
@@ -28,7 +28,7 @@ It is Debian/Ubuntu oriented and the software I use might not be the same as you
 I use a directory structure based on different projects and environments (but you don't need to have). Each project has its own playbooks, in addition of main common roles usable in every project.
 Example:
 
-```
+```graphql
 inventories/
   host # main inventory
 projects/
