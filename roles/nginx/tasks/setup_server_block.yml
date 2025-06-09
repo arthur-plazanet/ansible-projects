@@ -29,6 +29,7 @@
 - name: Test Nginx configuration
   ansible.builtin.command: nginx -t
   notify: Restart nginx
+  changed_when: false
 
 - name: Obtain SSL certificate with Certbot
   ansible.builtin.apt:

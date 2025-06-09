@@ -9,36 +9,70 @@
   # shell: top -bn1 | grep 'Cpu(s)' | awk '{print $2}'
   # Which only retrieve only the second column (user CPU usage).
   #
-  ansible.builtin.shell: mpstat 1 1 | awk '/Average:/ {print 100 - $NF}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    mpstat 1 1 | awk '/Average:/ {print 100 - $NF}'
   register: cpu_usage
+  args:
+    executable: /bin/bash
+  changed_when: false
 
 - name: Gather RAM usage
-  ansible.builtin.shell: free -m | awk '/Mem/ {printf "%.2f", ($3/$2)*100}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    free -m | awk '/Mem/ {printf "%.2f", ($3/$2)*100}'
   register: ram_usage
+  args:
+    executable: /bin/bash
+  changed_when: false
 
 - name: Get top 5 memory-consuming processes
-  shell: ps aux --sort=-%mem | awk 'NR<=6{print $1, $2, $3, $4, $11}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    ps aux --sort=-%mem | awk 'NR<=6{print $1, $2, $3, $4, $11}'
   register: memory_top_processes
+  args:
+    executable: /bin/bash
+  changed_when: false
 
 - name: Gather Disk Space
-  ansible.builtin.shell: df -h / | awk 'NR==2 {print $5}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    df -h / | awk 'NR==2 {print $5}'
   register: disk_space
+  args:
+    executable: /bin/bash
+  changed_when: false
 
 - name: Gather Load Average
-  ansible.builtin.shell: uptime | awk -F'[a-z]:' '{print $2}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    set -o pipefail && uptime | awk -F'[a-z]:' '{print $2}'
   register: load_average
+  args:
+    executable: /bin/bash
+  changed_when: false
 
 - name: Gather Swap Usage
-  ansible.builtin.shell: free -m | awk '/Swap/ {printf "%.2f", ($3/$2)*100}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    free -m | awk '/Swap/ {printf "%.2f", ($3/$2)*100}'
   register: swap_usage
+  args:
+    executable: /bin/bash
   ignore_errors: true
+  changed_when: false
 
 - name: Check swap usage
-  shell: 'swapon --show | tail -n +2'
+  ansible.builtin.shell: |
+    set -o pipefail
+    swapon --show | tail -n +2
   register: swap_usage
+  args:
+    executable: /bin/bash
 
 - name: Display swap usage
-  debug:
+  ansible.builtin.debug:
     msg: '{{ swap_usage.stdout_lines }}'
 
 - name: Display System Metrics

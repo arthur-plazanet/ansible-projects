@@ -11,8 +11,8 @@
   args:
     cmd: curl https://raw.githubusercontent.com/creationix/nvm/v0.7.0/install.sh | bash
     executable: /bin/bash
-    chdir: '{{ ansible_env.HOME }}'
-    creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+    chdir: "{{ ansible_env.HOME }}"
+    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
 
 - name: Source NVM script and install Node.js
   ansible.builtin.shell: |
@@ -28,6 +28,6 @@
   community.general.npm:
     name: pm2
     global: true
-    executable: '{{ npm_path }}'
+    executable: "{{ npm_path }}"
   environment:
-    PATH: '{{ node_dir }}:{{ ansible_env.PATH }}'
+    PATH: "{{ node_dir }}:{{ ansible_env.PATH }}"
